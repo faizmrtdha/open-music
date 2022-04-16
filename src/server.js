@@ -1,12 +1,12 @@
 require("dotenv").config();
 
 const Hapi = require("@hapi/hapi");
-const album = require("./api/music");
-const AlbumService = require("./services/inMemory/AlbumService");
-const AlbumValidator = require("./validator/album");
+const music = require("./api/music");
+const MusicService = require("./services/db/MusicService");
+const MusicValidator = require("./validator/music");
 
 const init = async () => {
-  const albumService = new AlbumService();
+  const musicService = new MusicService();
   const server = Hapi.server({
     port: 5000,
     host: process.env.NODE_ENV !== "production" ? "localhost" : "0.0.0.0",
@@ -18,10 +18,10 @@ const init = async () => {
   });
 
   await server.register({
-    plugin: album,
+    plugin: music,
     options: {
-      service: albumService,
-      validator: AlbumValidator,
+      service: musicService,
+      validator: MusicValidator,
     },
   });
 

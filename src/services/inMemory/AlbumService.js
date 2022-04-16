@@ -8,7 +8,7 @@ class AlbumService {
   }
 
   addAlbum({ name, year }) {
-    const id = nanoid(16);
+    const id = `album-${nanoid(16)}`;
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
 
@@ -39,7 +39,11 @@ class AlbumService {
       throw new NotFoundError("Album tidak ditemukan");
     }
 
-    return album;
+    return {
+      id: album.id,
+      name: album.name,
+      year: album.year,
+    };
   }
 
   editAlbumById(id, { name, year }) {
