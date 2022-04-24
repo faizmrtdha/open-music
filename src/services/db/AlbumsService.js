@@ -41,8 +41,6 @@ class AlbumsService {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
-    console.log(result.rows);
-
     return result.rows.map(mapDBAlbumToModel)[0];
   }
 
