@@ -10,6 +10,7 @@ const PostSongPlaylistPayloadSchema = Joi.object({
 });
 
 const DeleteSongPlaylistPayloadSchema = Joi.object({
+  playlistId: Joi.string().required(),
   songId: Joi.string().required(),
 });
 

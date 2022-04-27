@@ -1,5 +1,5 @@
 exports.up = (pgm) => {
-  pgm.createTable('songs_playlist', {
+  pgm.createTable('playlistsongs', {
     id: {
       type: 'VARCHAR(50)',
       primaryKey: true,
@@ -20,5 +20,5 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable('songs_playlist');
+  pgm.dropTable('playlistsongs');
 };

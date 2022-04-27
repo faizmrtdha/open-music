@@ -10,7 +10,8 @@ class PlaylistsHandler {
     this.deletePlaylistsHandler = this.deletePlaylistsHandler.bind(this);
     this.addSongsPlaylistsHandler = this.addSongsPlaylistsHandler.bind(this);
     this.getSongsPlaylistHandler = this.getSongsPlaylistHandler.bind(this);
-    this.deleteSongsPlaylistsHandler = this.deletePlaylistsHandler.bind(this);
+    this.deleteSongsPlaylistsHandler = this.deleteSongsPlaylistsHandler.bind(this);
+    this.getPlaylistSongsActivitiesHandler = this.getPlaylistSongsActivitiesHandler.bind(this);
   }
 
   async addPlaylistHandler(request, h) {

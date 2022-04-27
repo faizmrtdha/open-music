@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable no-underscore-dangle */
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
@@ -6,21 +7,22 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
 
 class PlaylistsService {
-  constructor() {
+  constructor(collaborationsService) {
     this._pool = new Pool();
+    this._collaborationsService = collaborationsService;
   }
 
   async addPlaylist({ name, owner }) {
     const id = `playlist-${nanoid(16)}`;
 
     const query = {
-      text: 'INSERT INTO playlists VALUES($1,$2,$3) RETURNING id',
+      text: 'INSERT INTO playlists VALUES($1, $2, $3) RETURNING id',
       values: [id, name, owner],
     };
 
     const result = await this._pool.query(query);
     if (!result.rows[0].id) {
-      throw new InvariantError('Album gagal ditambahkan');
+      throw new InvariantError('Playlist gagal ditambahkan');
     }
 
     return result.rows[0].id;
@@ -81,7 +83,7 @@ class PlaylistsService {
         throw error;
       }
       try {
-        await this._collaborationService.verifyCollaborator(playlistId, userId);
+        await this._collaborationsService.verifyCollaborator(playlistId, userId);
       } catch {
         throw error;
       }
@@ -92,7 +94,7 @@ class PlaylistsService {
     const id = nanoid(16);
 
     const query = {
-      text: 'INSERT INTO songs_playlist VALUES($1, $2, $3) RETURNING id',
+      text: 'INSERT INTO playlistsongs VALUES($1, $2, $3) RETURNING id',
       values: [id, playlistId, songId],
     };
 
@@ -109,11 +111,11 @@ class PlaylistsService {
 
   async getPlaylistSongs({ playlistId }) {
     const queryPlaylist = {
-      text: 'SELECT playlists.id, playlists.name, users.username FROM songs_playlist ps INNER JOIN playlists ON playlists.id = ps.playlist_id INNER JOIN users ON playlists.owner = users.id WHERE ps.playlist_id = $1',
+      text: 'SELECT playlists.id, playlists.name, users.username FROM playlistsongs ps INNER JOIN playlists ON playlists.id = ps.playlist_id INNER JOIN users ON playlists.owner = users.id WHERE ps.playlist_id = $1',
       values: [playlistId],
     };
     const querySongs = {
-      text: 'SELECT songs.id, songs.title, songs.performer FROM songs_playlist ps INNER JOIN songs ON songs.id = ps.song_id WHERE ps.playlist_id = $1',
+      text: 'SELECT songs.id, songs.title, songs.performer FROM playlistsongs ps INNER JOIN songs ON songs.id = ps.song_id WHERE ps.playlist_id = $1',
       values: [playlistId],
     };
     const resultPlaylist = await this._pool.query(queryPlaylist);
@@ -127,7 +129,7 @@ class PlaylistsService {
 
   async deletePlaylistSongs({ playlistId, songId }, userId) {
     const query = {
-      text: 'DELETE FROM songs_playlist WHERE playlist_id = $1 AND song_id = $2 RETURNING id',
+      text: 'DELETE FROM playlistsongs WHERE playlist_id = $1 AND song_id = $2 RETURNING id',
       values: [playlistId, songId],
     };
 
