@@ -6,7 +6,7 @@ class MusicHandler {
     this._validator = validator;
 
     this.postAlbumHandler = this.postAlbumHandler.bind(this);
-    this.getAlbumByIdHander = this.getAlbumByIdHandler.bind(this);
+    this.getAlbumByIdHandler = this.getAlbumByIdHandler.bind(this);
     this.putAlbumByIdHandler = this.putAlbumByIdHandler.bind(this);
     this.deleteAlbumByIdHandler = this.deleteAlbumByIdHandler.bind(this);
   }
@@ -25,27 +25,31 @@ class MusicHandler {
     return response;
   }
 
-  async getAlbumByIdHandler(request) {
+  async getAlbumByIdHandler(request, h) {
     const { id } = request.params;
     const album = await this._service.getAlbumById(id);
     const songs = await this._service.getSongByAlbumId(id);
 
-    if (songs.length > 0) {
+    if (songs) {
       const merge = { ...album, songs };
-      return {
+      const response = h.response({
         status: 'success',
         data: {
           album: merge,
         },
-      };
+      });
+      response.code(200);
+      return response;
     }
 
-    return {
+    const response = h.response({
       status: 'success',
       data: {
         album,
       },
-    };
+    });
+    response.code(200);
+    return response;
   }
 
   async putAlbumByIdHandler(request) {
