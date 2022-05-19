@@ -12,13 +12,15 @@ exports.up = (pgm) => {
       type: 'INTEGER',
       notNull: true,
     },
-    created_at: {
+    cover: {
       type: 'TEXT',
-      notNull: true,
+      notNull: false,
+      default: null,
     },
-    updated_at: {
-      type: 'TEXT',
+    created_at: {
+      type: 'TIMESTAMP',
       notNull: true,
+      default: pgm.func('current_timestamp'),
     },
   });
 };

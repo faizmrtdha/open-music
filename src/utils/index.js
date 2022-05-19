@@ -1,11 +1,9 @@
-/* eslint-disable camelcase */
 /* eslint-disable object-curly-newline */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
-const mapDBAlbumToModel = ({ id, name, year }) => ({
+const mapDBAlbumToModel = ({ id, name, year, cover }) => ({
   id,
   name,
   year,
+  coverUrl: cover,
 });
 
 const mapDBSongToModel = ({ id, title, year, performer, genre, duration, albumId }) => ({
